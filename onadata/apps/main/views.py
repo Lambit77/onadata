@@ -1647,14 +1647,8 @@ def fetch_form_submissions(request, form_id):
 
         response.raise_for_status()
 
-        return JsonResponse(
-            {
-                "success": True,
-                "form_id": form_id,
-                "data": response.json(),
-            },
-            safe=False,
-        )
+        data=response.json()
+        return JsonResponse(data, safe=False)
 
     except requests.exceptions.Timeout:
         return JsonResponse(
