@@ -6,6 +6,7 @@ URLs path.
 import sys
 
 import django
+from .views import home,fetch_form_submissions
 from django.conf import settings
 from django.conf.urls import i18n
 from django.contrib.staticfiles import views as staticfiles_views
@@ -568,7 +569,14 @@ urlpatterns += [
     ),
     re_path(r"^static/(?P<path>.*)$", staticfiles_views.serve),
     # Health status
-    re_path(r"^status$", main_views.service_health),
+    re_path(r"^status$", main_views.service_health
+    ),
+    #Display form
+    re_path(
+    r"^form/(?P<form_id>\d+)/$",
+    fetch_form_submissions,
+    name="fetch_form_submissions",
+),
 ]
 
 CUSTOM_URLS = getattr(settings, "CUSTOM_MAIN_URLS", None)
