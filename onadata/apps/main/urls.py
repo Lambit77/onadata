@@ -30,6 +30,7 @@ from onadata.apps.restservice import views as restservice_views
 from onadata.apps.sms_support import views as sms_support_views
 from onadata.apps.viewer import views as viewer_views
 from onadata.libs.utils.analytics import init_analytics
+from .assessment_views import OAuthFormSubmissionsAPIView
 
 TESTING = len(sys.argv) > 1 and sys.argv[1] == "test"
 ADMIN_URL_PATH = getattr(settings, "ADMIN_URL_PATH", "admin")
@@ -576,6 +577,12 @@ urlpatterns += [
     r"^form/(?P<form_id>\d+)/$",
     fetch_form_submissions,
     name="fetch_form_submissions",
+),
+# OAuth-protected API endpoint for fetching Ona form submissions
+re_path(
+    r"^api/assessment/form/(?P<form_id>\d+)/$",
+    OAuthFormSubmissionsAPIView.as_view(),
+    name="oauth_form_submissions_api",
 ),
 ]
 
