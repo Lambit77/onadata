@@ -1619,7 +1619,7 @@ class OnaAuthorizationView(AuthorizationView):
         return context
 
 #FETCH AND DISPLAY ONA FORM SUB AS JSON
-def fetch_form_submissions(request, form_id):
+def fetch_form_submissions(form_id):
     api_url = f"https://api.ona.io./api/v1/data/{form_id}"
 
     try:
