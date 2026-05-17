@@ -11,6 +11,79 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 
 
+#FETCH AND DISPLAY ONA FORM SUB AS JSON
+def fetch_form_submissions(form_id):
+    api_url = f"https://api.ona.io./api/v1/data/{form_id}"
+
+    try:
+        response = requests.get(api_url, timeout=10)
+
+        if response.status_code == 404:
+           return JsonResponse(
+                {
+                    "success": False,
+                    "error": "Form not found",
+                    "message": "No form submissions were found for the provided form ID.",
+                },
+                status=404,
+            )
+
+        if response.status_code in [401, 403]:
+            return JsonResponse(
+                {
+                    "success": False,
+                    "error": "Access denied",
+                    "message": "You do not have permission to view this form's submissions.",
+                },
+                status=response.status_code,
+            )
+
+        response.raise_for_status()
+
+        data=response.json()
+        return JsonResponse(data, safe=False)
+
+    except requests.exceptions.Timeout:
+        return JsonResponse(
+            {
+                "success": False,
+                "error": "Request timeout",
+                "message": "The request to the Ona API took too long. Please try again later.",
+            },
+            status=504,
+        )
+
+    except requests.exceptions.ConnectionError:
+        return JsonResponse(
+            {
+                "success": False,
+                "error": "Connection error",
+                "message": "Unable to connect to the Ona API. Please check your network connection.",
+            },
+            status=503,
+        )
+
+    except requests.exceptions.RequestException:
+        return JsonResponse(
+            {
+                "success": False,
+                "error": "API request failed",
+                "message": "An error occurred while fetching data from the Ona API.",
+            },
+            status=500,
+        )
+
+    except ValueError:
+        return JsonResponse(
+            {
+                "success": False,
+                "error": "Invalid response",
+                "message": "The Ona API returned a response that could not be read as JSON.",
+            },
+            status=500,
+        )
+
+
 class OAuthFormSubmissionsAPIView(APIView):
     authentication_classes = [OAuth2Authentication]
     permission_classes = [IsAuthenticated]

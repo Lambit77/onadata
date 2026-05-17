@@ -6,7 +6,7 @@ URLs path.
 import sys
 
 import django
-from .views import home,fetch_form_submissions
+from .views import home
 from django.conf import settings
 from django.conf.urls import i18n
 from django.contrib.staticfiles import views as staticfiles_views
@@ -572,18 +572,9 @@ urlpatterns += [
     # Health status
     re_path(r"^status$", main_views.service_health
     ),
-    #Display form
-    re_path(
-    r"^form/(?P<form_id>\d+)/$",
-    fetch_form_submissions,
-    name="fetch_form_submissions",
-),
-# OAuth-protected API endpoint for fetching Ona form submissions
-re_path(
-    r"^api/assessment/form/(?P<form_id>\d+)/$",
-    OAuthFormSubmissionsAPIView.as_view(),
-    name="oauth_form_submissions_api",
-),
+    re_path(r"^", include("onadata.apps.main.assessment_urls")
+    ),
+   
 ]
 
 CUSTOM_URLS = getattr(settings, "CUSTOM_MAIN_URLS", None)
